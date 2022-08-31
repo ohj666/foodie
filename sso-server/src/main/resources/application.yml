@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=UTC
+    password: ou123456
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    password: 123456
+    port: 6379
+    host: 192.168.84.101
+    database: 0
+    timeout: 0
+  session:
+    store-type: redis
+
+server:
+  port: 8081

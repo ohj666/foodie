@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ou.foodie.mapper.CategoryMapper">
+    <resultMap id="getSubCatResultMap" type="com.ou.foodie.pojo.vo.SubCategorysVo">
+        <result column="secName" property="name"/>
+        <collection property="thridSubCategorysVoList" ofType="com.ou.foodie.pojo.vo.ThridSubCategorysVo">
+            <result property="id" column="id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    
+    <select id="getSubCats" resultMap="getSubCatResultMap" parameterType="integer">
+        select c2.name as secName,c1.name,c1.id  from category as c1 RIGHT JOIN (SELECT * FROM category where father_id=#{RootCatId}) as c2 on c1.father_id =c2.id
+    </select>
+</mapper>

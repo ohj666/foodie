@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="foodie-shop-mapper" />
+        <module name="foodie-shop-api" />
+        <module name="foodie-shop-service" />
+        <module name="foodie-center-mapper" />
+        <module name="sso-server" />
+        <module name="foodie-common" />
+        <module name="foodie-shop-pojo" />
+        <module name="foodie-scurity-web" />
+        <module name="foodie-scurity-app" />
+        <module name="foodie-center-api" />
+        <module name="foodie-center-server" />
+        <module name="foodie-center-pojo" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="client1" target="1.8" />
+      <module name="client2" target="1.8" />
+      <module name="foodie-security-app" target="1.8" />
+      <module name="foodie-security-web" target="1.8" />
+      <module name="my-site" target="1.8" />
+      <module name="mybatis-generator" target="1.8" />
+      <module name="sso-Service" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="my-site" options="-parameters" />
+    </option>
+  </component>
+</project>

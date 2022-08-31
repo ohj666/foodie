@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ou.foodie.mapper.ItemsCommentsMapper">
+    
+    <resultMap id="getItemsCommentsAndLevelByResultMap" type="com.ou.foodie.pojo.dto.CommentAndLevel">
+        <result column="comment_level" property="level"/>
+        <result column="commentCounts" property="commentCounts"/>
+    </resultMap>
+    
+    <select id="getItemsCommentsAndLevel" resultMap="getItemsCommentsAndLevelByResultMap"  parameterType="string" >
+        select count(comment_level)  as commentCounts,comment_level from items_comments  where item_id =#{itemId} GROUP BY comment_level;
+    </select>
+
+</mapper>
