@@ -47,7 +47,7 @@ public class RegisterController {
         if (password.length() < 6) {
             return JsonResult.error(500, "密码长度不能小于6");
         }
-        if (password.equals(confirmPassword)) {
+        if (!password.equals(confirmPassword)) {
             return JsonResult.error(500, "两次密码不一致");
         }
 
@@ -61,22 +61,13 @@ public class RegisterController {
     public JsonResult LoginUser(@RequestBody UserBo userBo, HttpServletRequest request, HttpServletResponse response) {
         String password = userBo.getPassword();
         String username = userBo.getUsername();
-
-
         if (StringUtils.isBlank(password) || StringUtils.isBlank(username)) {
             return JsonResult.error(500, "用户名或密码不能为空");
         }
         if (password.length() < 6) {
             return JsonResult.error(500, "密码长度不能小于6");
         }
-
-
-        UserVo user = registerService.LoginUser(userBo);
-        if(user==null){
-            return JsonResult.error(500,"账号密码错误");
-        }
-        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(user), true);
-        return JsonResult.isOk(user);
+        return registerService.LoginUser(userBo,request,response);
     }
 
     @PostMapping("/logout")

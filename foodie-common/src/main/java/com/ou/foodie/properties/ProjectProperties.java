@@ -24,5 +24,8 @@ public class ProjectProperties {
     QQProperties qq=new QQProperties();
     private CustomProperties custom=new CustomProperties();
     private Oauth2Properties oauth2;
+    private String imgFileUri;
+    private String imgFileUrl;
+
 
 }

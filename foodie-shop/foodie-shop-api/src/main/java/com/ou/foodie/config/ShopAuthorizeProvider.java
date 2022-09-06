@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 public class ShopAuthorizeProvider implements AuthorizeProvider {
     @Override
     public boolean config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
-        config.anyRequest().permitAll();
+
+
         return true;
     }
 }

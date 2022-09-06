@@ -24,6 +24,8 @@ public interface ItemsMapper extends tk.mybatis.mapper.common.Mapper<Items> {
       List<SearchVo> getCatItems(CatItemsBo catItemsBo);
 
       List<ShopCartVo> queryShopCast(List shopCastId);
+
+      int decreaseItemSpectStock(@Param("id") String id,@Param("buyCounts") int buyCounts);
 }
 
 

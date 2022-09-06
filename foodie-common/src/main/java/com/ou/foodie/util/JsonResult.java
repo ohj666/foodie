@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 /**
  * @author Monty
  * @date 2022/07/21 14:15
@@ -34,6 +36,10 @@ public class JsonResult {
 
     public static JsonResult error(int status, String msg) {
         return new JsonResult(status, null, msg);
+    }
+
+    public static JsonResult error(int status, Map map) {
+        return new JsonResult(status, map, "");
     }
 
     public static JsonResult Parmerror(String msg,Object o) {

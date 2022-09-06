@@ -1,43 +1,130 @@
 package com.ou.foodie.server.impl;
 
-import com.ou.foodie.center.mapper.UserMapper;
-import com.ou.foodie.center.mapper.UserconnectionMapper;
-import com.ou.foodie.pojo.User;
-import com.ou.foodie.pojo.Userconnection;
-import com.ou.foodie.pojo.bo.UserRegisterBo;
 
-
+import com.ou.foodie.mapper.UsersMapper;
+import com.ou.foodie.pojo.Users;
+import com.ou.foodie.pojo.bo.UserInfoMoreBo;
+import com.ou.foodie.properties.ProjectConstant;
+import com.ou.foodie.properties.ProjectProperties;
 import com.ou.foodie.server.UserService;
+import com.ou.foodie.util.CookieUtils;
+import com.ou.foodie.util.DateUtils;
+import com.ou.foodie.util.JsonResult;
+import com.ou.foodie.util.JsonUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.social.connect.web.ProviderSignInUtils;
-import org.springframework.social.security.SocialUser;
-import org.springframework.social.security.SocialUserDetails;
-import org.springframework.social.security.SocialUserDetailsService;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.ServletWebRequest;
-import tk.mybatis.mapper.entity.Example;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class UserServiceImpl implements UserDetailsService{
-    private UserMapper userMapper;
+public class UserServiceImpl implements UserService {
+    private ProjectProperties properties;
+    private UsersMapper usersMapper;
+    @Override
+    public JsonResult userInfo(String userId) {
+        Users users = new Users();
+        users.setId(userId);
+        Users users1 = usersMapper.selectOne(users);
+        return JsonResult.isOk(users1);
+    }
 
-    private HttpServletRequest request;
-    private PasswordEncoder passwordEncoder;
-    private ProviderSignInUtils providerSignInUtils;
-    private UserconnectionMapper userconnectionMapper;
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public JsonResult update(String userId, UserInfoMoreBo userInfoMore, BindingResult result) {
+        if(result.hasErrors()){
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            Map<String,String> map=new HashMap<>();
+            for (FieldError fieldError : fieldErrors) {
+                String field = fieldError.getField();
+                String defaultMessage = fieldError.getDefaultMessage();
+                map.put(field,defaultMessage);
+            }
+            return JsonResult.error(500,map);
+
+        }
+        Users users = new Users();
+        users.setId(userId);
+        Users users1 = usersMapper.selectOne(users);
+
+        String nickname = userInfoMore.getNickname();
+        if(StringUtils.isBlank(nickname)||nickname.length()>=12){
+            return JsonResult.error(500,"错误的格式");
+        }
+        BeanUtils.copyProperties(userInfoMore,users1);
+        users1.setUpdatedTime(new Date());
+        usersMapper.updateByPrimaryKeySelective(users1);
+
+        return JsonResult.isOk();
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
+    public JsonResult uploadFace(String userId, MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+        if(file==null){
+            return JsonResult.error(500,"文件不能为空");
+        }
+        FileOutputStream fileOutputStream1=null;
+        String UserFile=File.separator+userId;
+        String originalFilename = file.getOriginalFilename();
+        String[] split = originalFilename.split("\\.");
+        String geshi=split[split.length-1];
+        if(!geshi.equalsIgnoreCase("png")&&
+       !geshi.equalsIgnoreCase("jpg")&&
+                !geshi.equalsIgnoreCase("jpeg")
+        ){
+            return JsonResult.error(500,"图片格式不正确");
+        }
+        String FileName="face-"+userId+"."+geshi;
+        String FinalName= ProjectConstant.IMAGE_URL+UserFile+File.separator+FileName;
+        try {
+            File outFile = new File(FinalName);
+            if(outFile.getParentFile()!=null){
+                outFile.getParentFile().mkdir();
+            }
+            fileOutputStream1 = new FileOutputStream(outFile);
+            InputStream inputStream = file.getInputStream();
+            IOUtils.copy(inputStream,fileOutputStream1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            if (fileOutputStream1!=null){
+                try {
+                    fileOutputStream1.flush();
+                    fileOutputStream1.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        String imgFileUrl = properties.getImgFileUrl()+UserFile+"/"+FileName+"?t="+ DateUtils.getDate(DateUtils.DATETIME_FORMAT);
+        Users users = new Users();
+        users.setId(userId);
+        users.setFace(imgFileUrl);
+        usersMapper.updateByPrimaryKeySelective(users);
+        Users users1 = usersMapper.selectOne(users);
+
+        CookieUtils.setCookie(request,response,"user", JsonUtils.objectToJson(users1),true);
+
+        return JsonResult.isOk();
     }
+
 
 //    @Override
 //    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {

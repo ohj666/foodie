@@ -1,5 +1,8 @@
 package com.ou.foodie.service.impl;
 
+import com.ou.foodie.mapper.UsersMapper;
+import com.ou.foodie.pojo.LoginUser;
+import com.ou.foodie.pojo.Users;
 import com.ou.foodie.properties.ProjectConstant;
 import com.ou.foodie.properties.ProjectProperties;
 
@@ -14,6 +17,7 @@ import org.springframework.social.security.SocialUserDetails;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Service;
 
+import javax.resource.spi.RetryableUnavailableException;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
@@ -23,10 +27,18 @@ public class UserServiceImpl implements UserDetailsService,SocialUserDetailsServ
     private PasswordEncoder passwordEncoder;
     private HttpServletRequest request;
     private ProjectProperties properties;
+    private UsersMapper usersMapper;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
+        Users users = new Users();
+        users.setUsername(s);
+        Users result = usersMapper.selectOne(users);
+        if(result==null){
+            throw new RuntimeException("用户名不存在");
+        }
+
+        return new LoginUser(result);
     }
 
     @Override

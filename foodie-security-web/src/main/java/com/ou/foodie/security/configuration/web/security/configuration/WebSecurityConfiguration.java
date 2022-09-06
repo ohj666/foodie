@@ -34,7 +34,7 @@ import java.util.List;
 import static com.ou.foodie.properties.ProjectConstant.REQUIRE_URL_REGISTER;
 
 
-@Configuration
+
 @AllArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private MobileAuthenticationConfiguration mobileAuthenticationConfiguration;
@@ -53,7 +53,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        validateCodeFilter.setValidateCodeProcessors(validateCodeProcessors);
 //        validateCodeFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
 //        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
-        http.apply(socialConfigurerAdapter);
+//        http.apply(socialConfigurerAdapter);
         http.apply(mobileAuthenticationConfiguration);
         authenticationConfigure.configure(http);
         http.apply(sessionAuthenticationConfigure);

@@ -1,5 +1,7 @@
 package com.ou.foodie.service;
 
+import com.ou.foodie.pojo.ItemsImg;
+import com.ou.foodie.pojo.ItemsSpec;
 import com.ou.foodie.pojo.bo.CommentsBo;
 import com.ou.foodie.pojo.vo.CountsVo;
 import com.ou.foodie.pojo.vo.ItemInfoVo;
@@ -21,4 +23,10 @@ public interface ItemsService {
     PagedGridResult renderItemSearch(String catId, String sort, Integer page, Integer pageSize);
 
     List<ShopCartVo> RefreshShopCast(String itemSpecIds);
+
+    ItemsSpec selectById (String Id);
+
+    ItemsImg selectMainImgById(String id);
+
+    void decreaseItemSpectStock(String id,int buyCount);
 }

@@ -1,5 +1,6 @@
 package com.ou.foodie.properties;
 
+import java.io.File;
 import java.util.Locale;
 
 public class ProjectConstant {
@@ -25,5 +26,10 @@ public class ProjectConstant {
     public static final String GET_QQ_USER_INFO_URL = "https://graph.qq.com/user/get_user_info?oauth_consumer_key=%S&openid=%S";
     public static final String GET_CUSTOM_USER_INFO_URL = "http://localhost:8080/user/me";
 
+    public static final String RETURN_URL="http://localhost:8080/orders/notifyMerchantOrderPaid";
+    public static final String PAYMENTSERVERURL="http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";
 
+    public static final String IMAGE_URL="D:" +
+            File.separator+"imageTest" +
+            File.separator+"foodieImage";
 }

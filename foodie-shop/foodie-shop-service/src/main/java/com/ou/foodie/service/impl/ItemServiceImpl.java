@@ -2,6 +2,7 @@ package com.ou.foodie.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.ou.foodie.enums.YesOrNo;
 import com.ou.foodie.mapper.*;
 import com.ou.foodie.pojo.*;
 import com.ou.foodie.pojo.bo.CatItemsBo;
@@ -15,6 +16,8 @@ import com.ou.foodie.util.PagedGridResult;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
@@ -209,5 +212,32 @@ public class ItemServiceImpl implements ItemsService {
         Collections.addAll(list,split);
 
         return itemsMapper.queryShopCast(list);
+    }
+
+    @Override
+    public ItemsSpec selectById(String Id) {
+        ItemsSpec itemsSpec = new ItemsSpec();
+        itemsSpec.setId(Id);
+        ItemsSpec itemsSpec1 = itemsSpecMapper.selectOne(itemsSpec);
+        return itemsSpec1;
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public ItemsImg selectMainImgById(String id) {
+        Example example = new Example(ItemsImg.class);
+        example.createCriteria().andEqualTo("itemId",id).andEqualTo("isMain", YesOrNo.YES.type);
+        ItemsImg itemsImg = itemsImgMapper.selectOneByExample(example);
+        return itemsImg;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void decreaseItemSpectStock(String id, int buyCount) {
+        int i = itemsMapper.decreaseItemSpectStock(id, buyCount);
+        if(i==0){
+            throw new RuntimeException("库存不足");
+        }
+
     }
 }

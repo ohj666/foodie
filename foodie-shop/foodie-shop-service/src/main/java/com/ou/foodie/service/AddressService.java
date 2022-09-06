@@ -16,4 +16,6 @@ public interface AddressService {
     void DelAddress(String userId, String addressId);
 
     void Update(AddressBO addressBO);
+
+    UserAddress selectByIdAndUseId(String Id,String UserId);
 }

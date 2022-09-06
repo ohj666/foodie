@@ -104,5 +104,14 @@ public class AddressServiceImpl implements AddressService {
         userAddressMapper.updateByPrimaryKeySelective(userAddress);
     }
 
+    @Override
+    public UserAddress selectByIdAndUseId(String Id, String UserId) {
+        UserAddress userAddress = new UserAddress();
+        userAddress.setUserId(UserId);
+        userAddress.setId(Id);
+        UserAddress userAddress1 = userAddressMapper.selectOne(userAddress);
+        return userAddress1;
+    }
+
 
 }

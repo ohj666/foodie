@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -13,7 +14,7 @@ import org.springframework.web.filter.CorsFilter;
  * @author Monty
  * @date 2022/08/24 14:29
  **/
-@Configuration
+@Component
 @AllArgsConstructor
 public class CorsConfig {
     private ProjectProperties properties;
